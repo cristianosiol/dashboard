@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F4F6FA;--surface:#FFFFFF;--surface2:#F0F2F7;--border:#E2E6EF;
+  --text:#1A1D2E;--muted:#7B8299;--muted2:#A8B0C8;
+  --plata:#0AC96A;--plata-light:#E6FAF1;
+  --araujo:#3B7EF8;--araujo-light:#EBF1FE;
+  --osorio:#F5A623;--osorio-light:#FEF4E6;
+  --pasalic:#F04E37;--pasalic-light:#FEF0EE;
+  --accent:#1A1D2E;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;padding:0;}
+
+/* TOP NAV */
+.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-icon{width:30px;height:30px;background:var(--text);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.nav-title{font-weight:700;font-size:14px;color:var(--text);letter-spacing:-0.2px;}
+.nav-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:6px 14px;font-size:12px;font-weight:500;color:var(--muted);background:none;border:none;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.nav-tab.active{background:var(--bg);color:var(--text);font-weight:600;}
+.nav-tab:hover:not(.active){color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.period-pill{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.period-btn{padding:5px 11px;font-size:11px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.period-btn.active{background:var(--text);color:#fff;font-weight:600;}
+
+/* MAIN */
+.main{padding:20px 24px;}
+
+/* PLAYER SELECTOR */
+.player-selector{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.player-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.player-chip.active-plata{border-color:var(--plata);background:var(--plata-light);}
+.player-chip.active-araujo{border-color:var(--araujo);background:var(--araujo-light);}
+.player-chip.active-osorio{border-color:var(--osorio);background:var(--osorio-light);}
+.player-chip.active-pasalic{border-color:var(--pasalic);background:var(--pasalic-light);}
+.player-chip:hover{border-color:var(--muted2);}
+.chip-dot{width:9px;height:9px;border-radius:50%;}
+.chip-name{font-size:12px;font-weight:600;color:var(--text);}
+.chip-sub{font-size:10px;color:var(--muted);}
+.chip-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin-left:2px;font-size:10px;transition:all 0.15s;}
+.active-plata .chip-check{background:var(--plata);border-color:var(--plata);color:#fff;}
+.active-araujo .chip-check{background:var(--araujo);border-color:var(--araujo);color:#fff;}
+.active-osorio .chip-check{background:var(--osorio);border-color:var(--osorio);color:#fff;}
+.active-pasalic .chip-check{background:var(--pasalic);border-color:var(--pasalic);color:#fff;}
+
+/* METRIC SELECTOR */
+.metric-bar{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.metric-label{font-size:11px;font-weight:600;color:var(--muted);margin-right:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.metric-btn{padding:5px 12px;font-size:11px;font-weight:500;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.metric-btn.active{background:var(--text);color:#fff;border-color:var(--text);}
+.metric-btn:hover:not(.active){color:var(--text);border-color:var(--muted2);}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+.kpi-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;}
+.kpi-players{display:flex;flex-direction:column;gap:6px;}
+.kpi-row-item{display:flex;align-items:center;gap:8px;}
+.kpi-pip{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.kpi-name{font-size:11px;color:var(--muted);width:46px;flex-shrink:0;}
+.kpi-bar-wrap{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.kpi-bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease;}
+.kpi-val{font-size:12px;font-weight:700;color:var(--text);width:38px;text-align:right;flex-shrink:0;}
+
+/* CHARTS GRID */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.chart-card.full{grid-column:1/-1;}
+.chart-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.chart-card-title{font-size:13px;font-weight:700;color:var(--text);}
+.chart-card-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.chart-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+.chart-wrap{position:relative;width:100%;height:200px;}
+.chart-wrap-sm{position:relative;width:100%;height:170px;}
+
+/* DETAIL TABLE */
+.detail-table{width:100%;border-collapse:collapse;font-size:12px;}
+.detail-table th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:8px 10px;border-bottom:2px solid var(--border);background:var(--bg);}
+.detail-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text);}
+.detail-table tr:last-child td{border-bottom:none;}
+.detail-table tr:hover td{background:var(--bg);}
+.winner-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;}
+
+/* LEGEND */
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:var(--text);}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+
+/* TAB CONTENT */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .charts-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="topnav">
+  <div class="nav-brand">
+    <div class="nav-icon">⚽</div>
+    <div>
+      <div class="nav-title">Observador Tático · Scout BI</div>
+      <div class="nav-sub">Comparativo de Jogadores</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchView('pa', this)">Plata × Araújo</button>
+    <button class="nav-tab" onclick="switchView('trio', this)">Plata × Osório × Pašalić</button>
+  </div>
+  <div class="nav-right">
+    <div class="period-pill">
+      <button class="period-btn" onclick="setPeriod(this,'2026')">2026</button>
+      <button class="period-btn active" onclick="setPeriod(this,'2025')">2025</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ======= VIEW: PLATA x ARAUJO ======= -->
+<div class="tab-content active" id="view-pa">
+
+  <!-- PLAYER CHIPS -->
+  <div class="player-selector">
+    <div class="player-chip active-plata" id="chip-plata" onclick="togglePlayer('plata')">
+      <div class="chip-dot" style="background:var(--plata)"></div>
+      <div><div class="chip-name">Gonzalo Plata</div><div class="chip-sub">RAM · Equador</div></div>
+      <div class="chip-check" id="check-plata">✓</div>
+    </div>
+    <div class="player-chip active-araujo" id="chip-araujo" onclick="togglePlayer('araujo')">
+      <div class="chip-dot" style="background:var(--araujo)"></div>
+      <div><div class="chip-name">Luiz Araújo</div><div class="chip-sub">RAM · Brasil</div></div>
+      <div class="chip-check" id="check-araujo">✓</div>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);">
+      <span id="period-label">Temporada 2025 · Totais</span>
+    </div>
+  </div>
+
+  <!-- METRIC FILTER -->
+  <div class="metric-bar">
+    <span class="metric-label">Filtrar:</span>
+    <button class="metric-btn active" onclick="filterMetric('all',this)">Todos</button>
+    <button class="metric-btn" onclick="filterMetric('attack',this)">Ataque</button>
+    <button class="metric-btn" onclick="filterMetric('pass',this)">Passe</button>
+    <button class="metric-btn" onclick="filterMetric('defense',this)">Defesa</button>
+    <button class="metric-btn" onclick="filterMetric('duel',this)">Duelos</button>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row" id="kpi-row-pa">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Volume Ofensivo</div><div class="chart-card-sub">Chutes, chances e gols</div></div>
+        <span class="chart-tag">Ataque</span>
+      </div>
+      <div class="legend-row" id="legend-pa-bar"></div>
+      <div class="chart-wrap"><canvas id="barChartPA"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Perfil Tático</div><div class="chart-card-sub">Índice 0–100 por dimensão</div></div>
+        <span class="chart-tag">Radar</span>
+      </div>
+      <div class="legend-row" id="legend-pa-radar"></div>
+      <div class="chart-wrap"><canvas id="radarPA"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Precisão de Passe por Tipo</div><div class="chart-card-sub">% de acerto em cada categoria</div></div>
+        <span class="chart-tag">Passe</span>
+      </div>
+      <div class="legend-row" id="legend-pa-pass"></div>
+      <div class="chart-wrap"><canvas id="passChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Duelos & Defesa</div><div class="chart-card-sub">Volume e taxa de sucesso</div></div>
+        <span class="chart-tag">Defesa</span>
+      </div>
+      <div class="legend-row" id="legend-pa-duel"></div>
+      <div class="chart-wrap"><canvas id="duelChart"></canvas></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="chart-card full">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Comparativo Detalhado</div><div class="chart-card-sub">Todas as métricas · vencedor destacado</div></div>
+        <span class="chart-tag" id="table-period-tag">2025 · Totais</span>
+      </div>
+      <div id="table-pa"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= VIEW: TRIO ======= -->
+<div class="tab-content" id="view-trio">
+  <div class="player-selector">
+    <div class="player-chip active-plata"><div class="chip-dot" style="background:var(--plata)"></div><div><div class="chip-name">Gonzalo Plata</div><div class="chip-sub">RAM</div></div></div>
+    <div class="player-chip active-osorio"><div class="chip-dot" style="background:var(--osorio)"></div><div><div class="chip-name">Darío Osório</div><div class="chip-sub">RM</div></div></div>
+    <div class="player-chip active-pasalic"><div class="chip-dot" style="background:var(--pasalic)"></div><div><div class="chip-name">Mario Pašalić</div><div class="chip-sub">CAM</div></div></div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);">Temporada 2025 · Médias por 90 min</div>
+  </div>
+
+  <div class="kpi-row" id="kpi-row-trio"></div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Perfil Tático · Radar</div><div class="chart-card-sub">Índice comparativo por 90 min</div></div>
+        <span class="chart-tag">Trio</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--plata)"></div>Plata</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--osorio)"></div>Osório</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--pasalic)"></div>Pašalić</div>
+      </div>
+      <div class="chart-wrap"><canvas id="radarTrio"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Ataque por 90 min</div><div class="chart-card-sub">Gols, assists, xG e chutes</div></div>
+        <span class="chart-tag">Ofensivo</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--plata)"></div>Plata</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--osorio)"></div>Osório</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--pasalic)"></div>Pašalić</div>
+      </div>
+      <div class="chart-wrap"><canvas id="attackTrio"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-card-header">
+        <div><div class="chart-card-title">Comparativo Detalhado · Trio</div><div class="chart-card-sub">Por 90 min · destaque para o líder de cada métrica</div></div>
+        <span class="chart-tag">2025 · /90</span>
+      </div>
+      <div id="table-trio"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ─── DATA ────────────────────────────────────────────────
+const data25 = {
+  plata: { min:3067, goals:5, assists:9, xg:6.1, shots:47, shotsOT:24, chances:27, chancesSucc:7, chancesPct:0.2593, chancesCreated:30, passTotal:1238, passPct:0.8207, keyPass:29, keyPassPct:0.5517, crosses:29, crossPct:0.2069, progPass:164, progPassPct:0.7378, shortPass:557, shortPassPct:0.8259, longPass:8, longPassPct:0.875, finalThirdPass:83, finalThirdPct:0.7711, penBoxPass:78, penBoxPct:0.5513, challenges:584, challengesPct:0.4161, defChal:172, defChalPct:0.4593, attChal:412, attChalPct:0.3981, airChal:105, airChalPct:0.3714, dribbles:142, dribPct:0.4507, dribFinal:79, dribFinalPct:0.3924, tackles:102, tacklePct:0.5882, interceptions:79, pickups:134, yellowCards:3, redCards:3, fouls:35, foulsSuf:35, goalsByHead:1, freekickShots:3 },
+  araujo: { min:3732, goals:11, assists:9, xg:8.64, shots:90, shotsOT:32, chances:36, chancesSucc:11, chancesPct:0.3056, chancesCreated:52, passTotal:1636, passPct:0.7861, keyPass:44, keyPassPct:0.6136, crosses:83, crossPct:0.3373, progPass:241, progPassPct:0.6888, shortPass:563, shortPassPct:0.8153, longPass:55, longPassPct:0.6182, finalThirdPass:90, finalThirdPct:0.6556, penBoxPass:261, penBoxPct:0.4636, challenges:564, challengesPct:0.4468, defChal:235, defChalPct:0.4638, attChal:329, attChalPct:0.4347, airChal:53, airChalPct:0.2642, dribbles:137, dribPct:0.5839, dribFinal:80, dribFinalPct:0.5875, tackles:143, tacklePct:0.5035, interceptions:76, pickups:207, yellowCards:5, redCards:0, fouls:64, foulsSuf:39, goalsByHead:1, freekickShots:5 }
+};
+const data26 = {
+  plata: { min:756, goals:1, assists:0, xg:1.94, shots:18, shotsOT:6, chances:8, chancesSucc:1, chancesPct:0.125, chancesCreated:6, passTotal:305, passPct:0.8623, keyPass:9, keyPassPct:0.2222, crosses:3, crossPct:0.6667, progPass:31, progPassPct:0.7742, shortPass:145, shortPassPct:0.8276, longPass:4, longPassPct:1, finalThirdPass:11, finalThirdPct:0.7273, penBoxPass:22, penBoxPct:0.4091, challenges:143, challengesPct:0.4825, defChal:35, defChalPct:0.3143, attChal:108, attChalPct:0.537, airChal:28, airChalPct:0.3571, dribbles:45, dribPct:0.6667, dribFinal:28, dribFinalPct:0.6071, tackles:25, tacklePct:0.36, interceptions:20, pickups:35, yellowCards:2, redCards:0, fouls:16, foulsSuf:15, goalsByHead:0, freekickShots:0 },
+  araujo: { min:414, goals:2, assists:1, xg:1.04, shots:11, shotsOT:7, chances:3, chancesSucc:2, chancesPct:0.6667, chancesCreated:6, passTotal:208, passPct:0.7788, keyPass:7, keyPassPct:0.4286, crosses:10, crossPct:0.3, progPass:35, progPassPct:0.5429, shortPass:56, shortPassPct:0.8214, longPass:13, longPassPct:0.5385, finalThirdPass:13, finalThirdPct:0.4615, penBoxPass:37, penBoxPct:0.4865, challenges:62, challengesPct:0.5161, defChal:21, defChalPct:0.5238, attChal:41, attChalPct:0.5122, airChal:6, airChalPct:0.3333, dribbles:17, dribPct:0.7647, dribFinal:7, dribFinalPct:0.5714, tackles:8, tacklePct:0.75, interceptions:13, pickups:16, yellowCards:0, redCards:0, fouls:5, foulsSuf:6, goalsByHead:0, freekickShots:0 }
+};
+const trioData = {
+  plata: { goals:0.15, assists:0.26, xg:0.18, shots:1.38, shotsOT:0.70, chancesCreated:0.88, passPct:0.8207, keyPass:0.85, progPass:4.81, crosses:0.85, crossPct:0.2069, dribbles:4.17, dribPct:0.4507, dribFinalPct:0.3924, challenges:17.14, challengesPct:0.4161, attChalPct:0.3981, defChalPct:0.4593, airChalPct:0.3714, tackles:2.99, tacklePct:0.5882, interceptions:2.32, pickups:3.93, fouls:1.03, foulsSuf:1.03 },
+  osorio: { goals:0.24, assists:0.08, xg:0.15, shots:3.05, shotsOT:0.95, chancesCreated:0.63, passPct:0.7319, keyPass:0.36, progPass:6.33, crosses:1.54, crossPct:0.1538, dribbles:4.95, dribPct:0.52, dribFinalPct:0.5217, challenges:14.2, challengesPct:0.493, attChalPct:0.527, defChalPct:0.438, airChalPct:0.439, tackles:2.41, tacklePct:0.4426, interceptions:2.53, pickups:0.20, fouls:1.31, foulsSuf:1.74 },
+  pasalic: { goals:0.17, assists:0.14, xg:0.36, shots:1.80, shotsOT:0.58, chancesCreated:0.64, passPct:0.881, keyPass:0.61, progPass:12.93, crosses:0.47, crossPct:0.2941, dribbles:1.00, dribPct:0.3889, dribFinalPct:0.2353, challenges:9.38, challengesPct:0.4882, attChalPct:0.5393, defChalPct:0.4312, airChalPct:0.5278, tackles:1.97, tacklePct:0.4648, interceptions:2.11, pickups:1.86, fouls:0.86, foulsSuf:0.53 }
+};
+
+let currentPeriod = '2025';
+let activePlayers = { plata: true, araujo: true };
+let charts = {};
+
+function getCurrentData() { return currentPeriod === '2025' ? data25 : data26; }
+
+function pct(v){ return Math.round(v*100)+'%'; }
+function fmt(v){ if(v===undefined||v===null||v==='-')return '—'; if(typeof v==='number'&&v<2&&v>0&&v!==Math.round(v)) return v.toFixed(2); return v; }
+
+// ─── KPI ROW ─────────────────────────────────────────────
+const kpiDefs = [
+  {label:'Gols',key:'goals',higher:true,suffix:''},
+  {label:'Assistências',key:'assists',higher:true,suffix:''},
+  {label:'xG',key:'xg',higher:true,suffix:''},
+  {label:'Dribles %',key:'dribPct',higher:true,pct:true},
+  {label:'Passes %',key:'passPct',higher:true,pct:true},
+];
+function buildKPI() {
+  const d = getCurrentData();
+  const el = document.getElementById('kpi-row-pa');
+  const players = ['plata','araujo'];
+  const colors = {plata:'var(--plata)',araujo:'var(--araujo)'};
+  const names = {plata:'Plata',araujo:'Araújo'};
+  let html = '';
+  kpiDefs.forEach(kpi => {
+    const vals = players.filter(p=>activePlayers[p]).map(p=>({p, v: d[p][kpi.key]}));
+    const max = Math.max(...vals.map(x=>x.v));
+    html += `<div class="kpi-card"><div class="kpi-label">${kpi.label}</div><div class="kpi-players">`;
+    vals.forEach(({p,v}) => {
+      const barW = max>0 ? Math.round(v/max*100) : 0;
+      const display = kpi.pct ? pct(v) : fmt(v);
+      html += `<div class="kpi-row-item">
+        <div class="kpi-pip" style="background:${colors[p]}"></div>
+        <div class="kpi-name">${names[p]}</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-fill" style="width:${barW}%;background:${colors[p]}"></div></div>
+        <div class="kpi-val">${display}</div>
+      </div>`;
+    });
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// KPI Trio
+const kpiTrioDefs = [
+  {label:'Gols / 90',key:'goals',pct:false},
+  {label:'Assistências / 90',key:'assists',pct:false},
+  {label:'xG / 90',key:'xg',pct:false},
+  {label:'Dribles / 90',key:'dribbles',pct:false},
+  {label:'Passes %',key:'passPct',pct:true},
+];
+function buildKPITrio() {
+  const el = document.getElementById('kpi-row-trio');
+  const players = ['plata','osorio','pasalic'];
+  const colors = {plata:'var(--plata)',osorio:'var(--osorio)',pasalic:'var(--pasalic)'};
+  const names = {plata:'Plata',osorio:'Osório',pasalic:'Pašalić'};
+  let html = '';
+  kpiTrioDefs.forEach(kpi => {
+    const vals = players.map(p=>({p, v: trioData[p][kpi.key]}));
+    const max = Math.max(...vals.map(x=>x.v));
+    html += `<div class="kpi-card"><div class="kpi-label">${kpi.label}</div><div class="kpi-players">`;
+    vals.forEach(({p,v}) => {
+      const barW = max>0 ? Math.round(v/max*100) : 0;
+      const display = kpi.pct ? pct(v) : fmt(v);
+      html += `<div class="kpi-row-item">
+        <div class="kpi-pip" style="background:${colors[p]}"></div>
+        <div class="kpi-name">${names[p]}</div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar-fill" style="width:${barW}%;background:${colors[p]}"></div></div>
+        <div class="kpi-val">${display}</div>
+      </div>`;
+    });
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// ─── LEGEND HELPER ────────────────────────────────────────
+function makeLegend(id, players) {
+  const colors = {plata:'var(--plata)',araujo:'var(--araujo)',osorio:'var(--osorio)',pasalic:'var(--pasalic)'};
+  const names = {plata:'Plata',araujo:'Araújo',osorio:'Osório',pasalic:'Pašalić'};
+  document.getElementById(id).innerHTML = players.filter(p=>activePlayers[p]||!('plata' in activePlayers)).map(p=>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[p]}"></div>${names[p]}</div>`
+  ).join('');
+}
+
+// ─── CHARTS ──────────────────────────────────────────────
+const chartDefaults = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}, tooltip:{backgroundColor:'#fff',titleColor:'#7B8299',bodyColor:'#1A1D2E',borderColor:'#E2E6EF',borderWidth:1,padding:10,titleFont:{size:11},bodyFont:{size:12,weight:'600'}}}
+};
+
+function buildCharts() {
+  const d = getCurrentData();
+  const ap = Object.keys(activePlayers).filter(p=>activePlayers[p]);
+  const colors = {plata:'#0AC96A',araujo:'#3B7EF8'};
+  const colorsAlpha = {plata:'rgba(10,201,106,0.12)',araujo:'rgba(59,126,248,0.12)'};
+
+  makeLegend('legend-pa-bar', ['plata','araujo']);
+  makeLegend('legend-pa-radar', ['plata','araujo']);
+  makeLegend('legend-pa-pass', ['plata','araujo']);
+  makeLegend('legend-pa-duel', ['plata','araujo']);
+
+  // Destroy old
+  ['barChartPA','radarPA','passChart','duelChart'].forEach(id => {
+    if(charts[id]) { charts[id].destroy(); delete charts[id]; }
+  });
+
+  // Bar chart — offensive
+  charts.barChartPA = new Chart(document.getElementById('barChartPA'), {
+    type:'bar',
+    data:{
+      labels:['Gols','Assistências','xG','Chutes','Chutes alvo','Chances criadas'],
+      datasets: ap.map(p=>({
+        label: p==='plata'?'Plata':'Araújo',
+        data: [d[p].goals, d[p].assists, d[p].xg, d[p].shots, d[p].shotsOT, d[p].chancesCreated],
+        backgroundColor: colors[p],
+        borderRadius:5,
+        barPercentage:0.6,
+      }))
+    },
+    options:{...chartDefaults, scales:{
+      x:{grid:{display:false},ticks:{color:'#7B8299',font:{size:11}}},
+      y:{grid:{color:'#F0F2F7'},border:{display:false},ticks:{color:'#7B8299',font:{size:10}}}
+    }}
+  });
+
+  // Radar
+  const radarLabels = ['Gols','Assistências','xG','Dribles%','Passes%','Tackles%','Interceptações','Chances criadas'];
+  const radarMax = {plata:[5,9,6.1,0.4507,0.8207,0.5882,79,30], araujo:[11,9,8.64,0.5839,0.7861,0.5035,76,52]};
+  const globMax = radarLabels.map((_,i)=>Math.max(...ap.map(p=>radarMax[p][i])));
+  charts.radarPA = new Chart(document.getElementById('radarPA'), {
+    type:'radar',
+    data:{
+      labels:radarLabels,
+      datasets: ap.map(p=>({
+        label: p==='plata'?'Plata':'Araújo',
+        data: radarMax[p].map((v,i)=>globMax[i]>0?Math.round(v/globMax[i]*100):0),
+        borderColor:colors[p], backgroundColor:colorsAlpha[p],
+        borderWidth:2, pointRadius:3, pointBackgroundColor:colors[p]
+      }))
+    },
+    options:{...chartDefaults, scales:{r:{min:0,max:100,grid:{color:'#E2E6EF'},angleLines:{color:'#E2E6EF'},ticks:{display:false},pointLabels:{color:'#7B8299',font:{size:10}}}}}
+  });
+
+  // Pass chart
+  charts.passChart = new Chart(document.getElementById('passChart'), {
+    type:'bar',
+    data:{
+      labels:['Passes%','Passe curto%','Passe longo%','Passe prog%','Terço final%','Área%'],
+      datasets: ap.map(p=>({
+        label: p==='plata'?'Plata':'Araújo',
+        data: [d[p].passPct, d[p].shortPassPct, d[p].longPassPct, d[p].progPassPct, d[p].finalThirdPct, d[p].penBoxPct].map(v=>Math.round(v*100)),
+        backgroundColor: colors[p], borderRadius:5, barPercentage:0.65
+      }))
+    },
+    options:{...chartDefaults, scales:{
+      x:{grid:{display:false},ticks:{color:'#7B8299',font:{size:10}}},
+      y:{min:0,max:100,grid:{color:'#F0F2F7'},border:{display:false},ticks:{color:'#7B8299',font:{size:10},callback:v=>v+'%'}}
+    }}
+  });
+
+  // Duel chart
+  charts.duelChart = new Chart(document.getElementById('duelChart'), {
+    type:'bar',
+    data:{
+      labels:['Duelos%','Def%','Ataque%','Aéreo%','Dribles%','Dribles T3%','Tackles%'],
+      datasets: ap.map(p=>({
+        label: p==='plata'?'Plata':'Araújo',
+        data: [d[p].challengesPct,d[p].defChalPct,d[p].attChalPct,d[p].airChalPct,d[p].dribPct,d[p].dribFinalPct,d[p].tacklePct].map(v=>Math.round(v*100)),
+        backgroundColor: colors[p], borderRadius:5, barPercentage:0.65
+      }))
+    },
+    options:{...chartDefaults, scales:{
+      x:{grid:{display:false},ticks:{color:'#7B8299',font:{size:10}}},
+      y:{min:0,max:100,grid:{color:'#F0F2F7'},border:{display:false},ticks:{color:'#7B8299',font:{size:10},callback:v=>v+'%'}}
+    }}
+  });
+
+  buildTable();
+}
+
+// ─── TABLE ────────────────────────────────────────────────
+function buildTable() {
+  const d = getCurrentData();
+  const rows = [
+    {cat:'Ataque',label:'Gols',key:'goals',higher:true,fmt:v=>v},
+    {cat:'Ataque',label:'Assistências',key:'assists',higher:true,fmt:v=>v},
+    {cat:'Ataque',label:'xG',key:'xg',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Ataque',label:'Chutes',key:'shots',higher:true,fmt:v=>v},
+    {cat:'Ataque',label:'Chutes no alvo',key:'shotsOT',higher:true,fmt:v=>v},
+    {cat:'Ataque',label:'Chances criadas',key:'chancesCreated',higher:true,fmt:v=>v},
+    {cat:'Ataque',label:'Conversão de chances',key:'chancesPct',higher:true,fmt:pct},
+    {cat:'Passe',label:'Passes totais',key:'passTotal',higher:true,fmt:v=>v},
+    {cat:'Passe',label:'Passes precisão %',key:'passPct',higher:true,fmt:pct},
+    {cat:'Passe',label:'Passes chave',key:'keyPass',higher:true,fmt:v=>v},
+    {cat:'Passe',label:'Cruzamentos',key:'crosses',higher:true,fmt:v=>v},
+    {cat:'Passe',label:'Precisão cruzamentos',key:'crossPct',higher:true,fmt:pct},
+    {cat:'Passe',label:'Passes progressivos',key:'progPass',higher:true,fmt:v=>v},
+    {cat:'Passe',label:'Passes ao terço final',key:'finalThirdPass',higher:true,fmt:v=>v},
+    {cat:'Passe',label:'Passes na área',key:'penBoxPass',higher:true,fmt:v=>v},
+    {cat:'Duelos',label:'Disputas totais',key:'challenges',higher:true,fmt:v=>v},
+    {cat:'Duelos',label:'Disputas ganhas %',key:'challengesPct',higher:true,fmt:pct},
+    {cat:'Duelos',label:'Duelos aéreos %',key:'airChalPct',higher:true,fmt:pct},
+    {cat:'Duelos',label:'Dribles',key:'dribbles',higher:true,fmt:v=>v},
+    {cat:'Duelos',label:'Dribles %',key:'dribPct',higher:true,fmt:pct},
+    {cat:'Duelos',label:'Dribles terço final %',key:'dribFinalPct',higher:true,fmt:pct},
+    {cat:'Defesa',label:'Tackles',key:'tackles',higher:true,fmt:v=>v},
+    {cat:'Defesa',label:'Tackles %',key:'tacklePct',higher:true,fmt:pct},
+    {cat:'Defesa',label:'Interceptações',key:'interceptions',higher:true,fmt:v=>v},
+    {cat:'Defesa',label:'Recuperações',key:'pickups',higher:true,fmt:v=>v},
+    {cat:'Disciplina',label:'Cartões amarelos',key:'yellowCards',higher:false,fmt:v=>v},
+    {cat:'Disciplina',label:'Cartões vermelhos',key:'redCards',higher:false,fmt:v=>v},
+    {cat:'Disciplina',label:'Faltas cometidas',key:'fouls',higher:false,fmt:v=>v},
+  ];
+  const colors = {plata:'var(--plata-light)',araujo:'var(--araujo-light)'};
+  const borderColors = {plata:'var(--plata)',araujo:'var(--araujo)'};
+  const names = {plata:'Plata',araujo:'Araújo'};
+  const ap = ['plata','araujo'];
+
+  let lastCat = '';
+  let html = `<table class="detail-table"><thead><tr><th>Categoria</th><th>Métrica</th>${ap.map(p=>`<th style="text-align:right">${names[p]}</th>`).join('')}<th style="text-align:center">Vencedor</th></tr></thead><tbody>`;
+  rows.forEach(row => {
+    const vals = ap.map(p=>d[p][row.key]);
+    const pv = d.plata[row.key], av = d.araujo[row.key];
+    let winner = null;
+    if(pv > av) winner = row.higher ? 'plata' : 'araujo';
+    else if(av > pv) winner = row.higher ? 'araujo' : 'plata';
+
+    const catCell = lastCat !== row.cat ? `<td style="font-weight:600;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">${row.cat}</td>` : '<td></td>';
+    lastCat = row.cat;
+
+    html += `<tr>
+      ${catCell}
+      <td style="color:var(--text)">${row.label}</td>
+      ${ap.map(p=>{
+        const isWinner = winner===p;
+        return `<td style="text-align:right;font-weight:${isWinner?'700':'400'};color:${isWinner?'var(--text)':'var(--muted)'}">${row.fmt(d[p][row.key])}</td>`;
+      }).join('')}
+      <td style="text-align:center">${winner ? `<span class="winner-badge" style="background:${colors[winner]};color:${borderColors[winner]}">${names[winner]}</span>` : '<span style="color:var(--muted2);font-size:11px;">Empate</span>'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('table-pa').innerHTML = html;
+}
+
+// ─── TRIO CHARTS ──────────────────────────────────────────
+function buildTrioCharts() {
+  const colors = {plata:'#0AC96A',osorio:'#F5A623',pasalic:'#F04E37'};
+  const alphas = {plata:'rgba(10,201,106,0.10)',osorio:'rgba(245,166,35,0.10)',pasalic:'rgba(240,78,55,0.10)'};
+  const names = {plata:'Plata',osorio:'Osório',pasalic:'Pašalić'};
+  const players = ['plata','osorio','pasalic'];
+
+  ['radarTrio','attackTrio'].forEach(id => { if(charts[id]){charts[id].destroy();delete charts[id];} });
+
+  const rLabels = ['Gols','Assistências','xG','Dribles','Passes%','Chutes','Recuperações'];
+  const rKeys  = [
+    v=>v.goals/0.24,
+    v=>v.assists/0.26,
+    v=>v.xg/0.36,
+    v=>v.dribbles/4.95,
+    v=>v.passPct/0.881,
+    v=>v.shots/3.05,
+    v=>v.pickups/3.93,
+  ];
+  charts.radarTrio = new Chart(document.getElementById('radarTrio'),{
+    type:'radar',
+    data:{
+      labels:rLabels,
+      datasets:players.map(p=>({
+        label:names[p],
+        data:rKeys.map(fn=>Math.round(fn(trioData[p])*100)),
+        borderColor:colors[p],backgroundColor:alphas[p],
+        borderWidth:2,pointRadius:3,pointBackgroundColor:colors[p]
+      }))
+    },
+    options:{...chartDefaults,scales:{r:{min:0,max:100,grid:{color:'#E2E6EF'},angleLines:{color:'#E2E6EF'},ticks:{display:false},pointLabels:{color:'#7B8299',font:{size:10}}}}}
+  });
+
+  charts.attackTrio = new Chart(document.getElementById('attackTrio'),{
+    type:'bar',
+    data:{
+      labels:['Gols/90','Assists/90','xG/90','Chutes/90','Chutes alvo/90','Chances criadas/90'],
+      datasets:players.map(p=>({
+        label:names[p],
+        data:[trioData[p].goals,trioData[p].assists,trioData[p].xg,trioData[p].shots,trioData[p].shotsOT,trioData[p].chancesCreated],
+        backgroundColor:colors[p],borderRadius:5,barPercentage:0.65
+      }))
+    },
+    options:{...chartDefaults,scales:{
+      x:{grid:{display:false},ticks:{color:'#7B8299',font:{size:10}}},
+      y:{grid:{color:'#F0F2F7'},border:{display:false},ticks:{color:'#7B8299',font:{size:10}}}
+    }}
+  });
+
+  buildTrioTable();
+}
+
+function buildTrioTable() {
+  const rows = [
+    {cat:'Ataque',label:'Gols / 90',key:'goals',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Ataque',label:'Assistências / 90',key:'assists',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Ataque',label:'xG / 90',key:'xg',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Ataque',label:'Chutes / 90',key:'shots',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Ataque',label:'Chutes alvo / 90',key:'shotsOT',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Ataque',label:'Chances criadas / 90',key:'chancesCreated',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Passe',label:'Passes precisão %',key:'passPct',higher:true,fmt:pct},
+    {cat:'Passe',label:'Passes chave / 90',key:'keyPass',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Passe',label:'Passes prog. / 90',key:'progPass',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Passe',label:'Cruzamentos / 90',key:'crosses',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Duelos',label:'Dribles / 90',key:'dribbles',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Duelos',label:'Dribles %',key:'dribPct',higher:true,fmt:pct},
+    {cat:'Duelos',label:'Dribles terço final %',key:'dribFinalPct',higher:true,fmt:pct},
+    {cat:'Duelos',label:'Duelos ganhos %',key:'challengesPct',higher:true,fmt:pct},
+    {cat:'Defesa',label:'Tackles / 90',key:'tackles',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Defesa',label:'Tackles %',key:'tacklePct',higher:true,fmt:pct},
+    {cat:'Defesa',label:'Interceptações / 90',key:'interceptions',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Defesa',label:'Recuperações / 90',key:'pickups',higher:true,fmt:v=>v.toFixed(2)},
+    {cat:'Disciplina',label:'Faltas / 90',key:'fouls',higher:false,fmt:v=>v.toFixed(2)},
+    {cat:'Disciplina',label:'Faltas sofridas / 90',key:'foulsSuf',higher:true,fmt:v=>v.toFixed(2)},
+  ];
+  const players = ['plata','osorio','pasalic'];
+  const names = {plata:'Plata',osorio:'Osório',pasalic:'Pašalić'};
+  const bgs = {plata:'var(--plata-light)',osorio:'var(--osorio-light)',pasalic:'var(--pasalic-light)'};
+  const bcs = {plata:'var(--plata)',osorio:'var(--osorio)',pasalic:'var(--pasalic)'};
+
+  let lastCat = '';
+  let html = `<table class="detail-table"><thead><tr><th>Categoria</th><th>Métrica</th>${players.map(p=>`<th style="text-align:right">${names[p]}</th>`).join('')}<th style="text-align:center">Líder</th></tr></thead><tbody>`;
+  rows.forEach(row => {
+    const vals = players.map(p=>trioData[p][row.key]);
+    const best = row.higher ? Math.max(...vals) : Math.min(...vals);
+    const winner = players[vals.indexOf(best)];
+    const catCell = lastCat!==row.cat ? `<td style="font-weight:600;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">${row.cat}</td>` : '<td></td>';
+    lastCat = row.cat;
+    html += `<tr>${catCell}<td>${row.label}</td>${players.map(p=>{
+      const isW = p===winner;
+      return `<td style="text-align:right;font-weight:${isW?'700':'400'};color:${isW?'var(--text)':'var(--muted)'}">${row.fmt(trioData[p][row.key])}</td>`;
+    }).join('')}<td style="text-align:center"><span class="winner-badge" style="background:${bgs[winner]};color:${bcs[winner]}">${names[winner]}</span></td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('table-trio').innerHTML = html;
+}
+
+// ─── INTERACTIVITY ────────────────────────────────────────
+function togglePlayer(p) {
+  const otherActive = Object.entries(activePlayers).filter(([k,v])=>k!==p&&v).length > 0;
+  if(activePlayers[p] && !otherActive) return; // keep at least 1
+  activePlayers[p] = !activePlayers[p];
+  const chip = document.getElementById('chip-'+p);
+  const check = document.getElementById('check-'+p);
+  if(activePlayers[p]) { chip.classList.add('active-'+p); check.textContent='✓'; }
+  else { chip.classList.remove('active-'+p); check.textContent=''; }
+  buildKPI(); buildCharts();
+}
+
+function setPeriod(btn, period) {
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPeriod = period;
+  document.getElementById('period-label').textContent = `Temporada ${period} · Totais`;
+  document.getElementById('table-period-tag').textContent = `${period} · Totais`;
+  buildKPI(); buildCharts();
+}
+
+function filterMetric(cat, btn) {
+  document.querySelectorAll('.metric-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function switchView(view, btn) {
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  if(view==='trio') buildTrioCharts();
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+buildKPI();
+buildCharts();
+buildKPITrio();
+</script>
+</body>
+</html>
